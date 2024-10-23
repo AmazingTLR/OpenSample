@@ -5,8 +5,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.amazingTLR.opensample.common.composable.CircularImage
 import com.amazingtlr.api.user.models.User
 
@@ -22,8 +22,17 @@ fun UserMiniCard(
         modifier = modifier
     )
     Spacer(modifier = modifier.height(8.dp))
-    Text(
-        text = user.login,
-        fontSize = 16.sp
+    Text(text = user.login)
+}
+
+@Composable
+@Preview
+fun UserMiniCardPreview(){
+    UserMiniCard(
+        user = User(
+            id = "1",
+            login = "amazingTLR",
+            avatarUrl = "https://avatars.githubusercontent.com/u/29750543?v=4"
+        )
     )
 }
