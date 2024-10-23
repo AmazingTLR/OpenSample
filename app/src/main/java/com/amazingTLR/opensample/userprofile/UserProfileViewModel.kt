@@ -3,12 +3,13 @@ package com.amazingTLR.opensample.userprofile
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.amazingTLR.opensample.common.ApiState
 import com.amazingTLR.opensample.common.SingleEventWrapper
 import com.amazingTLR.opensample.di.ScreenArgModule
-import com.amazingTLR.opensample.userList.UserListViewModel
-import com.amazingTLR.opensample.userList.UserListViewModel.Companion
-import com.amazingtlr.api.repo.models.Repo
+import com.amazingTLR.opensample.userprofile.models.RepoUI
+import com.amazingTLR.opensample.userprofile.models.toRepoUI
+import com.amazingTLR.opensample.userprofile.models.toUserProfileUI
+import com.amazingTLR.opensample.userprofile.states.RepoListState
+import com.amazingTLR.opensample.userprofile.states.UserProfileState
 import com.amazingtlr.api.repo.models.RepoListResponse
 import com.amazingtlr.usecase.UseCaseResult
 import com.amazingtlr.usecase.repo.RepoListUseCase
@@ -40,45 +41,45 @@ class UserProfileViewModel @Inject constructor(
     var events: StateFlow<SingleEventWrapper<UserProfileEvent>> = mutableEvents.asStateFlow()
 
     private val lastRepoPageStateFlow = MutableStateFlow(1)
-    private val mutableRepoListStateFlow: MutableStateFlow<List<Repo>> =
+    private val mutableRepoListStateFlow: MutableStateFlow<List<RepoUI>> =
         MutableStateFlow(emptyList())
 
-    val userProfileStateFlow: StateFlow<ApiState> by lazy {
+    val userProfileStateFlow: StateFlow<UserProfileState> by lazy {
         userSingleUseCase(userLogin!!)
             .map { useCaseResult ->
                 when (useCaseResult) {
                     is UseCaseResult.Failure -> {
                         Log.e(TAG, "Failed to fetch user profile", useCaseResult.cause)
-                        ApiState.Error
+                        UserProfileState.Error
                     }
 
                     is UseCaseResult.Success -> {
-                        ApiState.Success(useCaseResult.value.user)
+                        UserProfileState.Success(useCaseResult.value.user.toUserProfileUI())
                     }
                 }
             }.stateIn(
                 scope = viewModelScope,
                 started = SharingStarted.WhileSubscribed(),
-                initialValue = ApiState.Loading
+                initialValue = UserProfileState.Loading
             )
     }
 
-    val userRepoListStateFlow: StateFlow<ApiState> by lazy {
+    val userRepoListStateFlow: StateFlow<RepoListState> by lazy {
         repoListSharedFlow
             .map { repoListResponse ->
                 if (repoListResponse.repoList.isEmpty()) {
-                    ApiState.Error
+                    RepoListState.Error
                 } else {
-                    val userList = mutableRepoListStateFlow.updateAndGet {
-                        (it + repoListResponse.repoList).distinctBy { it.id }
+                    val repoList = mutableRepoListStateFlow.updateAndGet {
+                        (it + repoListResponse.repoList.map { it.toRepoUI() }).distinctBy { it.id }
                     }
 
-                    ApiState.Success(userList)
+                    RepoListState.Success(repoList)
                 }
             }.stateIn(
                 scope = viewModelScope,
                 started = SharingStarted.WhileSubscribed(),
-                initialValue = ApiState.Loading
+                initialValue = RepoListState.Loading
             )
     }
 

@@ -1,4 +1,4 @@
-package com.amazingTLR.opensample.userList
+package com.amazingTLR.opensample.userList.models
 
 import com.amazingtlr.api.user.models.User
 

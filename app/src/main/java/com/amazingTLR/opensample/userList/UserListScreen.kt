@@ -15,6 +15,7 @@ import com.amazingTLR.opensample.common.SingleEventWrapper
 import com.amazingTLR.opensample.common.screen.ErrorScreen
 import com.amazingTLR.opensample.common.screen.LoadingScreen
 import com.amazingTLR.opensample.userList.composables.UserList
+import com.amazingTLR.opensample.userList.states.UserListState
 
 @Composable
 fun UserListScreen(

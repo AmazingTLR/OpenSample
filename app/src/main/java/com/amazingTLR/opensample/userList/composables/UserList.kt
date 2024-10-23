@@ -14,7 +14,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.amazingTLR.opensample.common.OnBottomReached
 import com.amazingTLR.opensample.common.composable.LoadingCell
-import com.amazingTLR.opensample.userList.UserUI
+import com.amazingTLR.opensample.userList.models.UserUI
 import kotlin.math.floor
 
 @Composable

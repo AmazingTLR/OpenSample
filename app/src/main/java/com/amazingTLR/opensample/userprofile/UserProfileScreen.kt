@@ -18,13 +18,11 @@ import androidx.core.content.ContextCompat.startActivity
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.amazingTLR.opensample.R
-import com.amazingTLR.opensample.common.ApiState
 import com.amazingTLR.opensample.common.SingleEventWrapper
-import com.amazingTLR.opensample.common.safeCast
 import com.amazingTLR.opensample.common.screen.ErrorScreen
 import com.amazingTLR.opensample.common.screen.LoadingScreen
-import com.amazingTLR.opensample.userprofile.composable.UserProfileCard
-import com.amazingtlr.api.user.models.UserProfile
+import com.amazingTLR.opensample.userprofile.composables.UserProfileCard
+import com.amazingTLR.opensample.userprofile.states.UserProfileState
 
 @Composable
 fun UserProfileScreen(
@@ -38,31 +36,32 @@ fun UserProfileScreen(
 
     handleEvents(events, LocalContext.current)
 
-    when (userProfileState) {
-        is ApiState.Loading -> LoadingScreen(modifier = modifier)
+    userProfileState.let { userProfile ->
+        when (userProfile) {
+            UserProfileState.Error -> ErrorScreen(modifier = modifier, message = stringResource(R.string.no_profile_found_error))
 
-        is ApiState.Success<*> -> {
-            (userProfileState as ApiState.Success<*>).data?.let { safeCast<UserProfile>(it) }?.let { userProfile ->
+            UserProfileState.Loading -> LoadingScreen(modifier = modifier)
+            is UserProfileState.Success -> {
                 Column(
                     modifier = modifier.fillMaxSize(),
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
-                    UserProfileCard(user = userProfile, modifier = modifier)
-                    Spacer(modifier = modifier.size(16.dp))
-                    UserRepoListScreen(
-                        userRepoListStateFlow = userRepoListStateFlow,
-                        nbOfRepo = userProfile.nbOfRepo,
-                        onRepoClick = viewModel::onRepoClick,
-                        onRequestForNextPage = viewModel::loadMoreRepos,
-                        modifier = modifier
-                    )
+                    with(userProfile) {
+                        UserProfileCard(user = user, modifier = modifier)
+                        Spacer(modifier = modifier.size(16.dp))
+                        UserRepoListScreen(
+                            userRepoListState = userRepoListStateFlow,
+                            nbOfRepo = user.nbOfRepo,
+                            onRepoClick = viewModel::onRepoClick,
+                            onRequestForNextPage = viewModel::loadMoreRepos,
+                            modifier = modifier
+                        )
+                    }
+
                 }
             }
         }
 
-        is ApiState.Error -> {
-            ErrorScreen(modifier = modifier, message = stringResource(R.string.no_profile_found_error))
-        }
     }
 }
 

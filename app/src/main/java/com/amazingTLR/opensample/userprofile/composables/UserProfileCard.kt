@@ -1,4 +1,4 @@
-package com.amazingTLR.opensample.userprofile.composable
+package com.amazingTLR.opensample.userprofile.composables
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -18,19 +18,18 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.amazingTLR.opensample.R
 import com.amazingTLR.opensample.common.composable.CircularImage
-import com.amazingTLR.opensample.common.utils.formatToKNotation
-import com.amazingtlr.api.user.models.UserProfile
+import com.amazingTLR.opensample.userprofile.models.UserProfileUI
 
 @Composable
 fun UserProfileCard(
-    user: UserProfile,
+    user: UserProfileUI,
     modifier: Modifier = Modifier
 ) {
     val followersString = stringResource(id = R.string.followers)
     val followersText = remember {
         buildAnnotatedString {
             withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
-                append("${user.followers.formatToKNotation()} ")
+                append("${user.formatedFollowers} ")
             }
 
             append(followersString)
@@ -42,7 +41,7 @@ fun UserProfileCard(
     val followingText = remember {
         buildAnnotatedString {
             withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
-                append("${user.following.formatToKNotation()} ")
+                append("${user.formatedFollowing} ")
             }
 
             append(followingsString)
@@ -76,13 +75,12 @@ fun UserProfileCard(
 @Composable
 fun UserProfileCardPreview() {
     UserProfileCard(
-        user = UserProfile(
-            id = "1",
+        user = UserProfileUI(
             login = "amazingTLR",
             name = "Amazing TLR",
             avatarUrl = "https://avatars.githubusercontent.com/u/21097376?v=4",
-            followers = 1000,
-            following = 10,
+            formatedFollowers = "10K",
+            formatedFollowing = "10",
             nbOfRepo = 5,
         )
     )

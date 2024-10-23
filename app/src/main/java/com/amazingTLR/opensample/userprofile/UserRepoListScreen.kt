@@ -11,17 +11,16 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.amazingTLR.opensample.R
-import com.amazingTLR.opensample.common.ApiState
-import com.amazingTLR.opensample.common.safeCast
 import com.amazingTLR.opensample.common.screen.ErrorScreen
 import com.amazingTLR.opensample.common.screen.LoadingScreen
 import com.amazingTLR.opensample.common.utils.formatToKNotation
-import com.amazingTLR.opensample.userprofile.composable.RepoList
-import com.amazingtlr.api.repo.models.Repo
+import com.amazingTLR.opensample.userprofile.composables.RepoList
+import com.amazingTLR.opensample.userprofile.models.RepoUI
+import com.amazingTLR.opensample.userprofile.states.RepoListState
 
 @Composable
 fun UserRepoListScreen(
-    userRepoListStateFlow: ApiState,
+    userRepoListState: RepoListState,
     onRepoClick: (String) -> Unit,
     onRequestForNextPage: () -> Unit,
     nbOfRepo: Int,
@@ -36,25 +35,25 @@ fun UserRepoListScreen(
             modifier = modifier.fillMaxWidth()
         )
 
-        when (userRepoListStateFlow) {
-            is ApiState.Loading -> LoadingScreen(modifier = modifier)
+        userRepoListState.let { repoListState ->
+            when (repoListState) {
+                is RepoListState.Error -> {
+                    ErrorScreen(
+                        modifier = modifier,
+                        message = stringResource(R.string.no_repo_found_error)
+                    )
+                }
+                is RepoListState.Loading -> LoadingScreen(modifier = modifier)
 
-            is ApiState.Success<*> -> {
-
-                //Avoiding unsafe cast and null values. Shouldn't be needed
-                userRepoListStateFlow.data?.let { safeCast<List<Repo>>(it) }?.let { repoList ->
+                is RepoListState.Success -> {
                     RepoList(
-                        repoList = repoList,
+                        repoList = repoListState.repoList,
                         onRepoClick = onRepoClick,
                         onRequestForNextPage = onRequestForNextPage,
-                        hasMore = repoList.size < nbOfRepo,
+                        hasMore = repoListState.repoList.size < nbOfRepo,
                         modifier = modifier
                     )
                 }
-            }
-
-            is ApiState.Error -> {
-                ErrorScreen(modifier = modifier, message = stringResource(R.string.no_repo_found_error))
             }
         }
     }
@@ -64,9 +63,9 @@ fun UserRepoListScreen(
 @Preview
 fun UserRepoListScreenPreview() {
     UserRepoListScreen(
-        userRepoListStateFlow = ApiState.Success(
+        userRepoListState = RepoListState.Success(
             listOf(
-                Repo(
+                RepoUI(
                     id = "1",
                     name = "Repo Name",
                     description = "Description",
@@ -74,7 +73,7 @@ fun UserRepoListScreenPreview() {
                     stars = 100,
                     repoUrl = "",
                 ),
-                Repo(
+                RepoUI(
                     id = "2",
                     name = "Repo Name",
                     description = "Description",

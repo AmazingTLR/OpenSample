@@ -1,4 +1,4 @@
-package com.amazingTLR.opensample.userprofile.composable
+package com.amazingTLR.opensample.userprofile.composables
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.lazy.LazyColumn
@@ -10,13 +10,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import com.amazingTLR.opensample.common.composable.LoadingCell
 import com.amazingTLR.opensample.common.OnBottomReached
-import com.amazingtlr.api.repo.models.Repo
+import com.amazingTLR.opensample.common.composable.LoadingCell
+import com.amazingTLR.opensample.userprofile.models.RepoUI
 
 @Composable
 fun RepoList(
-    repoList: List<Repo>,
+    repoList: List<RepoUI>,
     onRepoClick: (String) -> Unit,
     onRequestForNextPage: () -> Unit,
     hasMore: Boolean,

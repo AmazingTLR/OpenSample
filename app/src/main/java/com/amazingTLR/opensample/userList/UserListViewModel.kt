@@ -4,6 +4,9 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.amazingTLR.opensample.common.SingleEventWrapper
+import com.amazingTLR.opensample.userList.models.UserUI
+import com.amazingTLR.opensample.userList.models.toUserUI
+import com.amazingTLR.opensample.userList.states.UserListState
 import com.amazingtlr.api.user.models.UserListResponse
 import com.amazingtlr.usecase.UseCaseResult
 import com.amazingtlr.usecase.user.UserListUseCase

@@ -1,4 +1,4 @@
-package com.amazingTLR.opensample.userprofile.composable
+package com.amazingTLR.opensample.userprofile.composables
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -19,13 +19,13 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.amazingTLR.opensample.common.composable.DynamicTextField
 import com.amazingTLR.opensample.R
-import com.amazingtlr.api.repo.models.Repo
+import com.amazingTLR.opensample.common.composable.DynamicTextField
+import com.amazingTLR.opensample.userprofile.models.RepoUI
 
 @Composable
 fun RepoCard(
-    repo: Repo,
+    repo: RepoUI,
     onRepoClick: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -77,7 +77,7 @@ fun RepoCard(
 @Composable
 fun RepoCardPreview() {
     RepoCard(
-        repo = Repo(
+        repo = RepoUI(
             id = "1",
             name = "Repo Name",
             description = "Description",
