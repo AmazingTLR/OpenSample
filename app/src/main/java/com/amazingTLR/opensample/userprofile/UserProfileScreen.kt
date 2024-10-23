@@ -12,10 +12,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat.startActivity
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.amazingTLR.opensample.R
 import com.amazingTLR.opensample.common.ApiState
 import com.amazingTLR.opensample.common.SingleEventWrapper
 import com.amazingTLR.opensample.common.safeCast
@@ -59,8 +61,7 @@ fun UserProfileScreen(
         }
 
         is ApiState.Error -> {
-            val error = (userProfileState as ApiState.Error).message
-            ErrorScreen(modifier = modifier, message = error)
+            ErrorScreen(modifier = modifier, message = stringResource(R.string.no_profile_found_error))
         }
     }
 }

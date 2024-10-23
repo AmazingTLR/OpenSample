@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">OpenSample</string>
+    <string name="repositories">Repositories • %1$s</string>
+    <string name="followers">Followers</string>
+    <string name="followings">Following</string>
+    <string name="no_users_found_error">No user found</string>
+    <string name="no_repo_found_error">"No repository found"</string>
+    <string name="no_profile_found_error">"Profile not found"</string>
+    <string name="point_separator">•</string>
 </resources>

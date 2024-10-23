@@ -9,12 +9,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.amazingTLR.opensample.R
 import com.amazingTLR.opensample.common.composable.CircularImage
 import com.amazingTLR.opensample.common.utils.formatToKNotation
 import com.amazingtlr.api.user.models.UserProfile
@@ -24,23 +26,26 @@ fun UserProfileCard(
     user: UserProfile,
     modifier: Modifier = Modifier
 ) {
+    val followersString = stringResource(id = R.string.followers)
     val followersText = remember {
         buildAnnotatedString {
             withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
-                append(user.followers.formatToKNotation())
+                append("${user.followers.formatToKNotation()} ")
             }
 
-            append(" Followers")
+            append(followersString)
         }
     }
+
+    val followingsString = stringResource(id = R.string.followings)
 
     val followingText = remember {
         buildAnnotatedString {
             withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
-                append(user.following.formatToKNotation())
+                append("${user.following.formatToKNotation()} ")
             }
 
-            append(" Following")
+            append(followingsString)
         }
     }
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -60,7 +65,7 @@ fun UserProfileCard(
         )
         Row {
             Text(text = followersText)
-            Text("•", modifier = modifier.padding(horizontal = 4.dp))
+            Text(text = stringResource(R.string.point_separator), modifier = modifier.padding(horizontal = 4.dp))
             Text(text = followingText)
         }
     }

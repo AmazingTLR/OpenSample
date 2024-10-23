@@ -6,6 +6,8 @@ import androidx.lifecycle.viewModelScope
 import com.amazingTLR.opensample.common.ApiState
 import com.amazingTLR.opensample.common.SingleEventWrapper
 import com.amazingTLR.opensample.di.ScreenArgModule
+import com.amazingTLR.opensample.userList.UserListViewModel
+import com.amazingTLR.opensample.userList.UserListViewModel.Companion
 import com.amazingtlr.api.repo.models.Repo
 import com.amazingtlr.api.repo.models.RepoListResponse
 import com.amazingtlr.usecase.UseCaseResult
@@ -45,9 +47,10 @@ class UserProfileViewModel @Inject constructor(
         userSingleUseCase(userLogin!!)
             .map { useCaseResult ->
                 when (useCaseResult) {
-                    is UseCaseResult.Failure -> ApiState.Error(
-                        useCaseResult.cause.message ?: "An unexpected error occurred"
-                    )
+                    is UseCaseResult.Failure -> {
+                        Log.e(TAG, "Failed to fetch user profile", useCaseResult.cause)
+                        ApiState.Error
+                    }
 
                     is UseCaseResult.Success -> {
                         ApiState.Success(useCaseResult.value.user)
@@ -64,7 +67,7 @@ class UserProfileViewModel @Inject constructor(
         repoListSharedFlow
             .map { repoListResponse ->
                 if (repoListResponse.repoList.isEmpty()) {
-                    ApiState.Error("No repo found")
+                    ApiState.Error
                 } else {
                     val userList = mutableRepoListStateFlow.updateAndGet {
                         (it + repoListResponse.repoList).distinctBy { it.id }
@@ -86,8 +89,8 @@ class UserProfileViewModel @Inject constructor(
                     when (useCaseResult) {
                         is UseCaseResult.Failure -> {
                             Log.e(
-                                "UserProfileViewModel",
-                                "Failed to fetch users",
+                                TAG,
+                                "Failed to fetch user's repo",
                                 useCaseResult.cause
                             )
                             RepoListResponse(emptyList())
@@ -110,6 +113,10 @@ class UserProfileViewModel @Inject constructor(
         lastRepoPageStateFlow.update {
             it + 1
         }
+    }
+
+    companion object {
+        private const val TAG = "UserProfileViewModel"
     }
 
 }

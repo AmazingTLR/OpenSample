@@ -7,8 +7,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.amazingTLR.opensample.R
 import com.amazingTLR.opensample.common.ApiState
 import com.amazingTLR.opensample.common.safeCast
 import com.amazingTLR.opensample.common.screen.ErrorScreen
@@ -29,7 +31,7 @@ fun UserRepoListScreen(
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         Text(
-            text = "Repositories • ${nbOfRepo.formatToKNotation()}",
+            text = stringResource(id = R.string.repositories, nbOfRepo.formatToKNotation()) ,
             style = MaterialTheme.typography.titleLarge,
             modifier = modifier.fillMaxWidth()
         )
@@ -52,8 +54,7 @@ fun UserRepoListScreen(
             }
 
             is ApiState.Error -> {
-                val error = (userRepoListStateFlow as ApiState.Error).message
-                ErrorScreen(modifier = modifier, message = error)
+                ErrorScreen(modifier = modifier, message = stringResource(R.string.no_repo_found_error))
             }
         }
     }

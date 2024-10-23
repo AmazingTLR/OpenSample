@@ -5,9 +5,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
+import com.amazingTLR.opensample.R
 import com.amazingTLR.opensample.Routes
 import com.amazingTLR.opensample.common.ApiState
 import com.amazingTLR.opensample.common.SingleEventWrapper
@@ -46,8 +48,7 @@ fun UserListScreen(
             }
 
             is ApiState.Error -> {
-                val error = (userListStateFlow as ApiState.Error).message
-                ErrorScreen(modifier = modifier, message = error)
+                ErrorScreen(modifier = modifier, message = stringResource(R.string.no_users_found_error))
             }
         }
     }

@@ -3,6 +3,7 @@ package com.amazingTLR.opensample.userList
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.amazingTLR.opensample.R
 import com.amazingTLR.opensample.common.ApiState
 import com.amazingTLR.opensample.common.SingleEventWrapper
 import com.amazingtlr.api.user.models.User
@@ -40,7 +41,7 @@ class UserListViewModel @Inject constructor(private val userListUseCase: UserLis
         userListSharedFlow
             .map { userListResponse ->
                 if (userListResponse.userList.isEmpty()) {
-                    ApiState.Error("No users found")
+                    ApiState.Error
                 } else {
                     val userList = mutableUserListStateFlow.updateAndGet {
                         (it + userListResponse.userList).distinctBy { it.id }
@@ -62,7 +63,7 @@ class UserListViewModel @Inject constructor(private val userListUseCase: UserLis
                 .map { useCaseResult ->
                     when (useCaseResult) {
                         is UseCaseResult.Failure -> {
-                            Log.e("UserListViewModel", "Failed to fetch users", useCaseResult.cause)
+                            Log.e(TAG, "Failed to fetch users", useCaseResult.cause)
                             UserListResponse(emptyList())
                         }
 
@@ -86,5 +87,9 @@ class UserListViewModel @Inject constructor(private val userListUseCase: UserLis
                 lastUserIdStateFlow.tryEmit(lastUserId)
             }
         }
+    }
+
+    companion object{
+        private const val TAG = "UserListViewModel"
     }
 }
