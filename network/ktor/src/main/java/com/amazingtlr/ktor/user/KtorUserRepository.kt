@@ -3,17 +3,16 @@ package com.amazingtlr.ktor.user
 import com.amazingtlr.api.NetworkResult
 import com.amazingtlr.api.repo.models.RepoListResponse
 import com.amazingtlr.api.toNetworkSuccessOrError
-import com.amazingtlr.api.user.models.UserListResponse
 import com.amazingtlr.api.user.UserRepository
+import com.amazingtlr.api.user.models.UserListResponse
 import com.amazingtlr.api.user.models.UserProfileResponse
-import com.amazingtlr.ktor.toNetworkResult
+import com.amazingtlr.ktor.getAndParse
 import com.amazingtlr.ktor.user.models.KtorRepo
 import com.amazingtlr.ktor.user.models.KtorUser
 import com.amazingtlr.ktor.user.models.toFullUserResponse
 import com.amazingtlr.ktor.user.models.toRepoResponse
 import com.amazingtlr.ktor.user.models.toUserResponse
 import io.ktor.client.HttpClient
-import io.ktor.client.request.get
 import io.ktor.http.appendPathSegments
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -27,7 +26,7 @@ class KtorUserRepository(private val httpClient: HttpClient) : UserRepository {
     override fun observeUsers(lastUserId: String?): Flow<NetworkResult<UserListResponse>> {
         return flow {
             emit(
-                httpClient.get {
+                httpClient.getAndParse<List<KtorUser>> {
                     url {
                         appendPathSegments(userEndpoint)
                         if (lastUserId != null) {
@@ -35,7 +34,6 @@ class KtorUserRepository(private val httpClient: HttpClient) : UserRepository {
                         }
                     }
                 }
-                    .toNetworkResult<List<KtorUser>>()
                     .toNetworkSuccessOrError { ktorUserList ->
                         UserListResponse(
                             ktorUserList.map { ktorUser ->
@@ -50,12 +48,11 @@ class KtorUserRepository(private val httpClient: HttpClient) : UserRepository {
     override fun observeUserByUserLogin(userLogin: String): Flow<NetworkResult<UserProfileResponse>> =
         flow {
             emit(
-                httpClient.get {
+                httpClient.getAndParse<KtorUser> {
                     url {
                         appendPathSegments(userEndpoint, userLogin)
                     }
                 }
-                    .toNetworkResult<KtorUser>()
                     .toNetworkSuccessOrError { ktorUser ->
                         UserProfileResponse(
                             ktorUser.toFullUserResponse()
@@ -70,13 +67,12 @@ class KtorUserRepository(private val httpClient: HttpClient) : UserRepository {
     ): Flow<NetworkResult<RepoListResponse>> =
         flow {
             emit(
-                httpClient.get {
+                httpClient.getAndParse<List<KtorRepo>> {
                     url {
                         appendPathSegments(userEndpoint, userLogin, repoEndpoint)
                         parameters.append(paginationPageParam, repoPage)
                     }
                 }
-                    .toNetworkResult<List<KtorRepo>>()
                     .toNetworkSuccessOrError { ktorListRepo ->
                         RepoListResponse(
                             ktorListRepo.map { ktorRepo ->
