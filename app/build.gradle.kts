@@ -93,6 +93,7 @@ dependencies {
     implementation(project(":usecase"))
     implementation(project(":network:ktor"))
 
+    // Coil
     implementation(libs.coil.compose)
     implementation(libs.coil.network.okhttp)
 
