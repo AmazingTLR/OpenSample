@@ -3,10 +3,7 @@ package com.amazingTLR.opensample.userList
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.amazingTLR.opensample.R
-import com.amazingTLR.opensample.common.ApiState
 import com.amazingTLR.opensample.common.SingleEventWrapper
-import com.amazingtlr.api.user.models.User
 import com.amazingtlr.api.user.models.UserListResponse
 import com.amazingtlr.usecase.UseCaseResult
 import com.amazingtlr.usecase.user.UserListUseCase
@@ -34,26 +31,26 @@ class UserListViewModel @Inject constructor(private val userListUseCase: UserLis
     var events: StateFlow<SingleEventWrapper<UserListEvent>> = mutableEvents.asStateFlow()
 
     private val lastUserIdStateFlow = MutableStateFlow<String?>(null)
-    private val mutableUserListStateFlow: MutableStateFlow<List<User>> =
+    private val mutableUserListStateFlow: MutableStateFlow<List<UserUI>> =
         MutableStateFlow(emptyList())
 
-    val userListStateFlow: StateFlow<ApiState> by lazy {
+    val userListStateFlow: StateFlow<UserListState> by lazy {
         userListSharedFlow
             .map { userListResponse ->
                 if (userListResponse.userList.isEmpty()) {
-                    ApiState.Error
+                    UserListState.Error
                 } else {
                     val userList = mutableUserListStateFlow.updateAndGet {
-                        (it + userListResponse.userList).distinctBy { it.id }
+                        (it + userListResponse.userList.map { it.toUserUI() }).distinctBy { it.id }
                     }
 
-                    ApiState.Success(userList)
+                    UserListState.Success(userList)
                 }
             }
             .stateIn(
                 scope = viewModelScope,
                 started = SharingStarted.WhileSubscribed(),
-                initialValue = ApiState.Loading
+                initialValue = UserListState.Loading
             )
     }
 

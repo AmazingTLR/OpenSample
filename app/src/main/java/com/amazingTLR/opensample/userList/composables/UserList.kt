@@ -1,4 +1,4 @@
-package com.amazingTLR.opensample.userList.composable
+package com.amazingTLR.opensample.userList.composables
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.lazy.LazyColumn
@@ -14,12 +14,12 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.amazingTLR.opensample.common.OnBottomReached
 import com.amazingTLR.opensample.common.composable.LoadingCell
-import com.amazingtlr.api.user.models.User
+import com.amazingTLR.opensample.userList.UserUI
 import kotlin.math.floor
 
 @Composable
 fun UserList(
-    users: List<User>,
+    users: List<UserUI>,
     maxWidth: Dp,
     onUserClick: (String) -> Unit,
     onRequestForNextPage: () -> Unit,

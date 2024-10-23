@@ -1,4 +1,4 @@
-package com.amazingTLR.opensample.userList.composable
+package com.amazingTLR.opensample.userList.composables
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -12,12 +12,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.amazingtlr.api.user.models.User
+import com.amazingTLR.opensample.userList.UserUI
 
 @Composable
 fun UserRow(
     gridSize: Int,
-    data: List<User>,
+    data: List<UserUI>,
     onClick: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {

@@ -11,13 +11,10 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.amazingTLR.opensample.R
 import com.amazingTLR.opensample.Routes
-import com.amazingTLR.opensample.common.ApiState
 import com.amazingTLR.opensample.common.SingleEventWrapper
-import com.amazingTLR.opensample.common.safeCast
 import com.amazingTLR.opensample.common.screen.ErrorScreen
 import com.amazingTLR.opensample.common.screen.LoadingScreen
-import com.amazingTLR.opensample.userList.composable.UserList
-import com.amazingtlr.api.user.models.User
+import com.amazingTLR.opensample.userList.composables.UserList
 
 @Composable
 fun UserListScreen(
@@ -31,24 +28,19 @@ fun UserListScreen(
 
         handleEvents(events, navController)
 
-        when (userListStateFlow) {
-            is ApiState.Loading -> LoadingScreen(modifier = modifier)
-
-            is ApiState.Success<*> -> {
-                //Avoiding unsafe cast and null values. Shouldn't be needed
-                (userListStateFlow as ApiState.Success<*>).data?.let { safeCast<List<User>>(it) }?.let { users ->
+        userListStateFlow.let { userState ->
+            when (userState) {
+                UserListState.Error -> ErrorScreen(modifier = modifier, message = stringResource(R.string.no_users_found_error))
+                UserListState.Loading -> LoadingScreen(modifier = modifier)
+                is UserListState.Success -> {
                     UserList(
-                        users = users,
+                        users = userState.userList,
                         maxWidth = maxWidth,
                         onUserClick = viewModel::onUserClick,
                         onRequestForNextPage = viewModel::loadMoreUsers,
                         modifier = modifier
                     )
                 }
-            }
-
-            is ApiState.Error -> {
-                ErrorScreen(modifier = modifier, message = stringResource(R.string.no_users_found_error))
             }
         }
     }
